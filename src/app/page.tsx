@@ -29,8 +29,8 @@ export default async function Home() {
         <div className="max-w-2xl mx-auto px-5 py-8">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-[24px] font-bold tracking-tight text-foreground">
-                The ASX Curator
+              <h1 className="text-[26px] font-bold tracking-tight text-foreground">
+                Stockade
               </h1>
               <p className="text-[13px] text-muted mt-0.5">{formatted}</p>
             </div>
@@ -40,8 +40,7 @@ export default async function Home() {
             </div>
           </div>
           <p className="text-[14px] text-muted mt-3 leading-relaxed max-w-md">
-            The essential Australian stock market read. Top stories and
-            analysis, curated hourly.
+            Australian market intelligence, curated hourly. The best ASX news and analysis in one place.
           </p>
         </div>
       </header>
@@ -73,7 +72,7 @@ export default async function Home() {
         <div className="max-w-2xl mx-auto px-5 py-8">
           <div className="flex items-center justify-between">
             <p className="text-[12px] text-muted/60">
-              &copy; {now.getFullYear()} The ASX Curator
+              &copy; {now.getFullYear()} Stockade
             </p>
             <p className="text-[11px] text-muted/40">
               Updated hourly. Not financial advice.

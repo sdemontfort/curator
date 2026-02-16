@@ -31,28 +31,41 @@ export default function ArticleCard({ article }: { article: Article }) {
       rel="noopener noreferrer"
       className="block group"
     >
-      <article className="py-6 border-b border-border">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-[11px] font-medium tracking-wide uppercase text-muted">
-            {CATEGORY_LABELS[article.category]}
-          </span>
-          <span className="text-[11px] text-muted/60">{"/"}</span>
-          <span className="text-[11px] text-muted/80">{article.source}</span>
-          <span className="text-[11px] text-muted/60 ml-auto">
-            {timeAgo(article.publishedAt)}
+      <article className="py-6 border-b border-border flex gap-5">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-[11px] font-medium tracking-wide uppercase text-muted">
+              {CATEGORY_LABELS[article.category]}
+            </span>
+            <span className="text-[11px] text-muted/60">{"/"}</span>
+            <span className="text-[11px] text-muted/80">{article.source}</span>
+            <span className="text-[11px] text-muted/60 ml-auto">
+              {timeAgo(article.publishedAt)}
+            </span>
+          </div>
+          <h3 className="text-[17px] leading-snug font-medium text-foreground group-hover:text-accent transition-colors mb-1.5">
+            {article.title}
+          </h3>
+          {article.summary && (
+            <p className="text-[14px] leading-relaxed text-muted line-clamp-2">
+              {article.summary}
+            </p>
+          )}
+          <span className="inline-block mt-2 text-[12px] font-medium text-accent/70 group-hover:text-accent transition-colors">
+            Read article &rarr;
           </span>
         </div>
-        <h3 className="text-[17px] leading-snug font-medium text-foreground group-hover:text-accent transition-colors mb-1.5">
-          {article.title}
-        </h3>
-        {article.summary && (
-          <p className="text-[14px] leading-relaxed text-muted line-clamp-2">
-            {article.summary}
-          </p>
+        {article.imageUrl && (
+          <div className="hidden sm:block flex-shrink-0 w-[140px] h-[100px] rounded-lg overflow-hidden bg-accent-light">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={article.imageUrl}
+              alt=""
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
         )}
-        <span className="inline-block mt-2 text-[12px] font-medium text-accent/70 group-hover:text-accent transition-colors">
-          Read article &rarr;
-        </span>
       </article>
     </a>
   );

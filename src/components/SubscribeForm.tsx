@@ -44,12 +44,12 @@ export default function SubscribeForm() {
     <div className="bg-accent text-white rounded-lg p-8">
       <div className="max-w-md mx-auto text-center">
         <h2 className="text-[20px] font-semibold mb-1">
-          The Curated Investor Brief
+          The Stockade Brief
         </h2>
         <p className="text-[14px] text-white/70 mb-5">
           The top ASX stories, handpicked daily. Delivered to your inbox.
         </p>
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center justify-center gap-2 mb-3">
           <div className="flex items-center gap-1.5 text-[13px] text-white/60">
             <span className="inline-block w-1 h-1 rounded-full bg-green" />
             $5/month

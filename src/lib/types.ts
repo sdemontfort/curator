@@ -4,6 +4,7 @@ export interface Article {
   summary: string;
   url: string;
   source: string;
+  imageUrl: string | null;
   publishedAt: string;
   category: "markets" | "analysis" | "company" | "economy" | "opinion";
   curatedAt: string;

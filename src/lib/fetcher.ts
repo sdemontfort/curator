@@ -8,15 +8,45 @@ interface RSSItem {
   content?: string;
   isoDate?: string;
   pubDate?: string;
+  imageUrl?: string;
 }
 
 interface RSSFeed {
   items: RSSItem[];
 }
 
+function extractImage(itemXml: string): string | undefined {
+  // <media:content url="...">
+  const media = itemXml.match(/<media:content[^>]+url=["']([^"']+)["']/);
+  if (media) return media[1];
+
+  // <media:thumbnail url="...">
+  const thumb = itemXml.match(/<media:thumbnail[^>]+url=["']([^"']+)["']/);
+  if (thumb) return thumb[1];
+
+  // <enclosure url="..." type="image/...">
+  const enc = itemXml.match(
+    /<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image\/[^"']+["']/
+  );
+  if (enc) return enc[1];
+
+  // <enclosure url="..."> (without explicit type check, fallback)
+  const encFallback = itemXml.match(/<enclosure[^>]+url=["']([^"']+)["']/);
+  if (encFallback) {
+    const url = encFallback[1];
+    if (/\.(jpg|jpeg|png|webp|gif)/i.test(url)) return url;
+  }
+
+  // <img src="..."> inside content
+  const img = itemXml.match(/<img[^>]+src=["']([^"']+)["']/);
+  if (img) return img[1];
+
+  return undefined;
+}
+
 async function parseFeed(url: string): Promise<RSSFeed> {
   const res = await fetch(url, {
-    headers: { "User-Agent": "AusCurator/1.0" },
+    headers: { "User-Agent": "Stockade/1.0" },
   });
   const xml = await res.text();
 
@@ -44,6 +74,7 @@ async function parseFeed(url: string): Promise<RSSFeed> {
       content: getTag("content:encoded") || getTag("description"),
       isoDate: getTag("pubDate"),
       pubDate: getTag("pubDate"),
+      imageUrl: extractImage(itemXml),
     });
   }
 
@@ -51,15 +82,22 @@ async function parseFeed(url: string): Promise<RSSFeed> {
 }
 
 function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .trim();
+  return (
+    html
+      // First decode HTML entities that might be wrapping tags
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      // Remove all HTML tags (including <a href="...">, <img>, etc.)
+      .replace(/<[^>]*?>/g, "")
+      // Clean up remaining entities
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&nbsp;/g, " ")
+      // Collapse whitespace
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 }
 
 function generateId(title: string, url: string): string {
@@ -164,6 +202,7 @@ export async function fetchArticles(): Promise<Article[]> {
             summary,
             url,
             source: source.name,
+            imageUrl: item.imageUrl || null,
             publishedAt: item.isoDate || item.pubDate || now.toISOString(),
             category: source.category,
             curatedAt: now.toISOString(),
